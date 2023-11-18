@@ -4,15 +4,13 @@ import com.iRead.backendproyect.dto.AuthDTO;
 import com.iRead.backendproyect.dto.AuthenticationDTORequest;
 import com.iRead.backendproyect.dto.TeacherDTO;
 import com.iRead.backendproyect.dto.TeacherDTORequest;
+import com.iRead.backendproyect.models.Teacher;
 import com.iRead.backendproyect.services.TeacherService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")

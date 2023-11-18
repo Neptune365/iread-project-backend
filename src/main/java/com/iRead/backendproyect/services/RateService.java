@@ -31,7 +31,7 @@ public class RateService {
         }
 
         rate.setStudent(student);
-        rate.setStory(story);
+//        rate.setStory(story);
 
         return rateRepository.save(rate);
 

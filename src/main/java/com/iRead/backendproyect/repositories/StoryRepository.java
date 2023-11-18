@@ -8,6 +8,6 @@ import java.util.List;
 
 @Repository
 public interface StoryRepository extends JpaRepository<Story,Long> {
-    Story findStoryModelByAccessWord(String accessWord);
+    Story findStoryByAccessWord(String accessWord);
     List<Story> findAllStoriesByTeacherId(Long id);
 }
