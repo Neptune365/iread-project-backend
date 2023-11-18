@@ -3,13 +3,15 @@ package com.iRead.backendproyect.services;
 import com.iRead.backendproyect.config.Jwt.JwtService;
 import com.iRead.backendproyect.config.validation.EmailValidator;
 import com.iRead.backendproyect.dto.AuthDTO;
-import com.iRead.backendproyect.dto.AuthenticationDTO;
+import com.iRead.backendproyect.dto.AuthenticationDTORequest;
 import com.iRead.backendproyect.dto.TeacherDTO;
+import com.iRead.backendproyect.dto.TeacherDTORequest;
 import com.iRead.backendproyect.email.EmailSender;
 import com.iRead.backendproyect.exception.EmailExistsException;
 import com.iRead.backendproyect.exception.MissingRequiredFieldsException;
 import com.iRead.backendproyect.exception.NoSuchElementException;
 import com.iRead.backendproyect.mapper.TeacherMapper;
+import com.iRead.backendproyect.models.Role;
 import com.iRead.backendproyect.models.Teacher;
 import com.iRead.backendproyect.repositories.TeacherRepository;
 import lombok.AllArgsConstructor;
@@ -38,7 +40,7 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
     @Override
-    public AuthDTO register(TeacherDTO request) {
+    public TeacherDTO register(TeacherDTORequest request) {
         if (request.getName() == null) throw new MissingRequiredFieldsException("name");
         if (request.getSurname() == null) throw new MissingRequiredFieldsException("surname");
         if (request.getEmail() == null) throw new MissingRequiredFieldsException("email");
@@ -52,24 +54,26 @@ public class TeacherServiceImpl implements TeacherService {
             throw new IllegalStateException("Correo electrónico no válido");
         }
 
-        Teacher user = teacherMapper.mapToModel(request);
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        var user = Teacher.builder()
+                .name(request.getName())
+                .surname(request.getSurname())
+                .email(request.getEmail())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .role(Role.USER)
+                .build();
 
         teacherRepository.save(user);
-
-        var jwtToken = jwtService.generateToken(user);
 
         String link = "http://localhost:8080/api/auth/authenticate/";
         emailSender.send(
                 request.getEmail(),
                 buildEmail(request.getName(), link));
 
-        return AuthDTO.builder()
-                .token(jwtToken).build();
+        return teacherMapper.mapToDTO(user);
     }
 
     @Override
-    public AuthDTO authenticate(AuthenticationDTO request) {
+    public AuthDTO authenticate(AuthenticationDTORequest request) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getEmail(),
@@ -87,11 +91,11 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
     @Override
-    public AuthDTO updateTeacher(Long teacher_id, TeacherDTO teacherDTO) {
+    public AuthDTO updateTeacher(Long teacher_id, TeacherDTORequest teacherDTORequest) {
         Teacher teacherExists = teacherRepository.findById(teacher_id)
                 .orElseThrow(() -> new NoSuchElementException("Teacher not founded"));
 
-        teacherMapper.updateModel(teacherDTO, teacherExists);
+        teacherMapper.updateModel(teacherDTORequest, teacherExists);
 
         teacherRepository.save(teacherExists);
 

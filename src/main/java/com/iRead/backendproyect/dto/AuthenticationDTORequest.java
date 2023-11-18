@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class AuthenticationDTO {
+public class AuthenticationDTORequest {
     @NotBlank(message = "Por favor ingresa un correo electrónico.")
     @Email(message = "El correo electrónico debe ser válido.")
     private String email;
