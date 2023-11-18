@@ -21,10 +21,9 @@ public class StudentController {
         return ResponseEntity.ok(studentService.enterName(student));
     }
 
-    @GetMapping("/access/{accessWord}")
-    public ResponseEntity<Story> accessStoryByWordAccess(@PathVariable String accessWord) {
-        Story story = storyService.findStoryAccessWord(accessWord);
-        return ResponseEntity.ok(story);
+    @GetMapping("/accessStory/{accessWord}")
+    public void accessToStoryByAccessWord(@PathVariable String accessWord) {
+        storyService.findStoryByAccessWord(accessWord);
     }
 
 }

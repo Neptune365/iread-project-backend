@@ -37,21 +37,23 @@ public class Story {
     @Size(min = 5, max = 15)
     private String accessWord;
 
+    private Boolean active;
+
     @ManyToOne
     @JoinColumn(name = "teacher_id")
     @JsonIgnore
     private Teacher teacher;
 
-    @OneToMany(mappedBy = "story")
-    @JsonIgnore
-    private List<Rate> rates;
-
+//    @OneToMany(mappedBy = "story")
+//    @JsonIgnore
+//    private List<Rate> rates;
+//
     @OneToMany(mappedBy = "story")
     private List<Interaction> activities;
 
     @PrePersist
     public void prePersist() {
         dateCreation = LocalDateTime.now();
+        active = false;
     }
-
 }
