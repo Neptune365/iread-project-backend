@@ -4,13 +4,13 @@ import com.iRead.backendproyect.models.api_story.Story;
 import com.iRead.backendproyect.models.api_story.Student;
 import com.iRead.backendproyect.services.StoryService;
 import com.iRead.backendproyect.services.StudentService;
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/students")
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class StudentController {
 
     private final StudentService studentService;
