@@ -30,8 +30,8 @@ public class Rate {
     @JoinColumn(name = "student_id")
     private Student student;
 
-    @ManyToOne
-    @JoinColumn(name = "story_id")
-    private Story story;
+//    @ManyToOne
+//    @JoinColumn(name = "story_id")
+//    private Story story;
 
 }
