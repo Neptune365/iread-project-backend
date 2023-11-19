@@ -47,6 +47,8 @@ public class Teacher implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    private Boolean enabled = false;
+
     @OneToMany(mappedBy = "teacher")
     @JsonIgnore
     private List<Story> stories;
@@ -94,7 +96,7 @@ public class Teacher implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return enabled;
     }
 
 }
