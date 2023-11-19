@@ -33,7 +33,7 @@ public class StudentInteraction {
 
     @ManyToOne
     @JoinColumn(name = "interaction_id")
-    private Interaction interaction;
+    private Activity activity;
 
 
     @ManyToOne
