@@ -11,7 +11,7 @@ import java.util.List;
 public interface TeacherService {
 
     List<Teacher> getAllTeachers();
-    TeacherDTO register(TeacherDTORequest request);
+    String singUpUser(Teacher teacher);
     AuthDTO authenticate(AuthenticationDTORequest request);
     AuthDTO updateTeacher(Long teacher_id, TeacherDTORequest teacherDTORequest);
     Teacher findTeacherById(Long id);
