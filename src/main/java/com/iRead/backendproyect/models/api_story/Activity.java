@@ -1,22 +1,19 @@
 package com.iRead.backendproyect.models.api_story;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.Duration;
-import java.time.LocalDateTime;
-import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "interaction")
-public class Interaction {
+public class Activity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,12 +32,12 @@ public class Interaction {
     @Column(name = "vocabulary_json", nullable = false)
     private String vocabularyJson;
 
-
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "story_id")
+    @JsonIgnore
     private Story story;
 
-    @OneToMany(mappedBy = "interaction")
-    private List<StudentInteraction> studentInteractions;
+//    @OneToMany(mappedBy = "interaction")
+//    private List<StudentInteraction> studentInteractions;
 
 }

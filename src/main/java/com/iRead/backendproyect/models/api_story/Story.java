@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -48,8 +47,8 @@ public class Story {
 //    @JsonIgnore
 //    private List<Rate> rates;
 //
-    @OneToMany(mappedBy = "story")
-    private List<Interaction> activities;
+    @OneToOne(mappedBy = "story")
+    private Activity activities;
 
     @PrePersist
     public void prePersist() {

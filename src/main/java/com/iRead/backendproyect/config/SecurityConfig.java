@@ -42,6 +42,7 @@ public class SecurityConfig {
                 new AntPathRequestMatcher("/api/auth/**"),
                 new AntPathRequestMatcher("/api/rates/**"),
                 new AntPathRequestMatcher("/api/students/**"),
+                new AntPathRequestMatcher("/api/interactions"),
                 new AntPathRequestMatcher("/v3/api-docs/**"),
                 new AntPathRequestMatcher("/swagger-ui/**"),
                 new AntPathRequestMatcher("/swagger-ui.html")
