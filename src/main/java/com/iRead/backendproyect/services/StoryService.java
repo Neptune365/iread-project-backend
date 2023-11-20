@@ -4,13 +4,17 @@ import com.iRead.backendproyect.dto.StoryDTO;
 import com.iRead.backendproyect.exception.ResourceNotFoundException;
 import com.iRead.backendproyect.mapper.StoryMapper;
 import com.iRead.backendproyect.models.Teacher;
+import com.iRead.backendproyect.models.api_story.Activity;
 import com.iRead.backendproyect.models.api_story.Story;
-import com.iRead.backendproyect.repositories.StoryRepository;
-import com.iRead.backendproyect.repositories.TeacherRepository;
+import com.iRead.backendproyect.models.api_story.StudentActivity;
+import com.iRead.backendproyect.repositories.*;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -20,6 +24,9 @@ public class StoryService {
     private final StoryRepository storyRepository;
     private final TeacherRepository teacherRepository;
     private final StoryMapper storyMapper;
+    private final ActivityRepository activityRepository;
+    private final StudentActivityRepository studentActivityRepository;
+    private final StudentRepository studentRepository;
 
     public List<StoryDTO> listAllStories() {
         List<Story> stories = storyRepository.findAll();
@@ -51,16 +58,27 @@ public class StoryService {
                 .collect(Collectors.toList());
     }
 
-    public void activateStory(Long storyId) throws ResourceNotFoundException {
+    public List<Story> findAllDetailsStoriesByTeacherId(Long teacherId) {
+        List<Story> stories = storyRepository.findAllStoriesByTeacherId(teacherId);
+
+        return stories;
+    }
+
+    public Map<String, String> activateStory(Long storyId) throws ResourceNotFoundException {
         Story story = storyRepository.findById(storyId)
                 .orElseThrow(() -> new ResourceNotFoundException("Story not found with id: " + storyId));
 
         story.setActive(true);
-
         storyRepository.save(story);
+
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "La historia ha comenzado");
+        response.put("title", story.getTitle());
+
+        return response;
     }
 
-    public void findStoryByAccessWord(String accessWord) throws ResourceNotFoundException, IllegalStateException {
+    public boolean findStoryByAccessWord(String accessWord) throws ResourceNotFoundException, IllegalStateException {
         Story story = storyRepository.findStoryByAccessWord(accessWord);
 
         if (story == null) {
@@ -71,8 +89,28 @@ public class StoryService {
             throw new IllegalStateException("La historia no está activa. No se puede acceder a ella.");
         } else {
             System.out.println("Ingresaste a la historia.");
+            return true;
         }
     }
 
+    public Story assignActivityToStory(Long storyId, Activity activityDetails) throws ResourceNotFoundException {
+        Story story = storyRepository.findById(storyId)
+                .orElseThrow(() -> new ResourceNotFoundException("Story not found with id: " + storyId));
 
+        Activity newActivity = new Activity();
+        newActivity.setJsonConverted(activityDetails.getJsonConverted());
+
+        newActivity.setStory(story);
+        activityRepository.save(newActivity);
+
+        story.setActivities(newActivity);
+        storyRepository.save(story);
+
+        return story;
+    }
+
+    @Transactional
+    public void deleteStory(Long storyId) {
+        storyRepository.deleteById(storyId);
+    }
 }

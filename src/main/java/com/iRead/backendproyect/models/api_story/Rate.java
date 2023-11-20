@@ -4,7 +4,6 @@ package com.iRead.backendproyect.models.api_story;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -27,11 +26,7 @@ public class Rate {
     private int stars;
 
     @ManyToOne
-    @JoinColumn(name = "student_id")
-    private Student student;
-
-//    @ManyToOne
-//    @JoinColumn(name = "story_id")
-//    private Story story;
+    @JoinColumn(name = "story_id")
+    private Story story;
 
 }

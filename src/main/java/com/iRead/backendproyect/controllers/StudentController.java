@@ -2,6 +2,8 @@ package com.iRead.backendproyect.controllers;
 
 import com.iRead.backendproyect.models.api_story.Story;
 import com.iRead.backendproyect.models.api_story.Student;
+import com.iRead.backendproyect.models.api_story.StudentActivity;
+import com.iRead.backendproyect.services.ActivityService;
 import com.iRead.backendproyect.services.StoryService;
 import com.iRead.backendproyect.services.StudentService;
 import lombok.AllArgsConstructor;
@@ -22,8 +24,14 @@ public class StudentController {
     }
 
     @GetMapping("/accessStory/{accessWord}")
-    public void accessToStoryByAccessWord(@PathVariable String accessWord) {
-        storyService.findStoryByAccessWord(accessWord);
+    public boolean accessToStoryByAccessWord(@PathVariable String accessWord) {
+        return storyService.findStoryByAccessWord(accessWord);
+    }
+
+    @PostMapping("/{studentId}/activities")
+    public ResponseEntity<StudentActivity> completeActivity(@PathVariable long studentId, @RequestBody StudentActivity studentActivity){
+        StudentActivity completedActivity = studentService.completeActivity(studentId, studentActivity);
+        return ResponseEntity.ok(completedActivity);
     }
 
 }

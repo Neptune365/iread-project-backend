@@ -83,8 +83,8 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
     @Override
-    public AuthDTO updateTeacher(Long teacher_id, TeacherDTORequest teacherDTORequest) {
-        Teacher teacherExists = teacherRepository.findById(teacher_id)
+    public AuthDTO updateTeacher(Long teacherId, TeacherDTORequest teacherDTORequest) {
+        Teacher teacherExists = teacherRepository.findById(teacherId)
                 .orElseThrow(() -> new NoSuchElementException("Teacher not founded"));
 
         teacherMapper.updateModel(teacherDTORequest, teacherExists);
@@ -98,8 +98,8 @@ public class TeacherServiceImpl implements TeacherService {
                 .build();
     }
 
-    public Teacher findTeacherById(Long id) {
-        return teacherRepository.findTeacherById(id);
+    public Teacher findTeacherById(Long teacherId) {
+        return teacherRepository.findTeacherById(teacherId);
     }
 
     public int enableUser(String email) {

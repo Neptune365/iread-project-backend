@@ -27,9 +27,6 @@ public class Student {
 
     @OneToMany(mappedBy = "student")
     @JsonIgnore
-    private List<Rate> rates;
-
-//    @OneToMany(mappedBy = "student")
-//    private List<StudentInteraction> studentActivities;
+    private List<StudentActivity> studentActivities;
 
 }

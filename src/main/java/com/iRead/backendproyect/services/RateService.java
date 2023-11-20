@@ -1,40 +1,33 @@
 package com.iRead.backendproyect.services;
 
-import com.iRead.backendproyect.dto.RateDTO;
+import com.iRead.backendproyect.dto.RateDTORequest;
+import com.iRead.backendproyect.exception.ResourceNotFoundException;
 import com.iRead.backendproyect.models.api_story.Rate;
 import com.iRead.backendproyect.models.api_story.Story;
-import com.iRead.backendproyect.models.api_story.Student;
 import com.iRead.backendproyect.repositories.RateRepository;
 import com.iRead.backendproyect.repositories.StoryRepository;
-import com.iRead.backendproyect.repositories.StudentRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class RateService {
 
     private final RateRepository rateRepository;
-    private final StudentRepository studentRepository;
     private final StoryRepository storyRepository;
 
-    public Rate addRate(RateDTO rateDTO) {
+    public Rate addRate(Long storyId, RateDTORequest rateDTORequest) {
+        Story story = storyRepository.findById(storyId)
+                .orElseThrow(() -> new ResourceNotFoundException("No se encontró la story con id: " + storyId));
+
         Rate rate = new Rate();
-        rate.setStars(rateDTO.getStars());
-
-        Student student = studentRepository.findByNameStudent(rateDTO.getStudentName());
-        Story story = storyRepository.findById(rateDTO.getStoryId())
-                .orElse(null);
-
-        if (student == null || story == null) {
-            return null;
-        }
-
-        rate.setStudent(student);
-//        rate.setStory(story);
+        rate.setStars(rateDTORequest.getStars());
+        rate.setStory(story);
 
         return rateRepository.save(rate);
-
     }
 
 }

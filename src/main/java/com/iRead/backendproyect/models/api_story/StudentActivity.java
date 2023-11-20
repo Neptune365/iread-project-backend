@@ -1,5 +1,6 @@
 package com.iRead.backendproyect.models.api_story;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -12,8 +13,8 @@ import java.time.Duration;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "student_interaction")
-public class StudentInteraction {
+@Table(name = "student_activity")
+public class StudentActivity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,11 +33,12 @@ public class StudentInteraction {
 
 
     @ManyToOne
-    @JoinColumn(name = "interaction_id")
+    @JoinColumn(name = "activity_id")
+    @JsonIgnore
     private Activity activity;
 
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "student_id")
     private Student student;
 
