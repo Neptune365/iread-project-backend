@@ -14,6 +14,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
@@ -48,6 +49,7 @@ public class Teacher implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    @Column(name = "enabled")
     private Boolean enabled = false;
 
     @OneToMany(mappedBy = "teacher")
@@ -56,6 +58,12 @@ public class Teacher implements UserDetails {
 
     @OneToMany(mappedBy = "teacher")
     private List<Subscription> subscriptions;
+
+    @Column(name = "recovery_token")
+    private String recoveryToken;
+
+    @Column(name = "recovery_token_expiry")
+    private LocalDateTime recoveryTokenExpiry;
 
     @OneToMany(mappedBy = "teacher")
     private List<Token> tokens;

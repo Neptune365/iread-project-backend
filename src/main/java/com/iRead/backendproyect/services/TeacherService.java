@@ -6,6 +6,7 @@ import com.iRead.backendproyect.dto.TeacherDTORequest;
 import com.iRead.backendproyect.models.Teacher;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface TeacherService {
 
@@ -14,5 +15,7 @@ public interface TeacherService {
     AuthDTO authenticate(AuthenticationDTORequest request);
     AuthDTO updateTeacher(Long teacherId, TeacherDTORequest teacherDTORequest);
     Teacher findTeacherById(Long teacherId);
+
+    Optional<Teacher> findTeacherByEmail(String email);
 
 }
