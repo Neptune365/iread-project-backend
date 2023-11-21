@@ -6,17 +6,13 @@ import com.iRead.backendproject.mapper.StoryMapper;
 import com.iRead.backendproject.models.Teacher;
 import com.iRead.backendproject.models.api_story.Activity;
 import com.iRead.backendproject.models.api_story.Story;
-import com.iRead.backendproject.models.api_story.Student;
 import com.iRead.backendproject.models.api_story.StudentActivity;
 import com.iRead.backendproject.repositories.*;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,6 +23,7 @@ public class StoryService {
     private final TeacherRepository teacherRepository;
     private final StoryMapper storyMapper;
     private final ActivityRepository activityRepository;
+    private final StudentService studentService;
 
     public List<StoryDTO> listAllStories() {
         List<Story> stories = storyRepository.findAll();
@@ -64,31 +61,40 @@ public class StoryService {
         return stories;
     }
 
-    public Story activateStory(Long storyId) throws ResourceNotFoundException {
+    public String activateStory(Long storyId) throws ResourceNotFoundException {
         Story story = storyRepository.findById(storyId)
-                .orElseThrow(() -> new ResourceNotFoundException("Story not found with id: " + storyId));
+            .orElseThrow(() -> new ResourceNotFoundException("Story not found with id: " + storyId));
 
         story.setActive(true);
         storyRepository.save(story);
 
-        return story;
+        return story.getTitle();
     }
 
-//    public Map<String, String> deactivateStory(Long storyId) throws ResourceNotFoundException {
-//        Story story = storyRepository.findById(storyId)
-//                .orElseThrow(() -> new ResourceNotFoundException("Story not found with id: " + storyId));
-//
-//        story.setActive(false);
-//        storyRepository.save(story);
-//
-//        Map<String, String> response = new HashMap<>();
-//        response.put("message", "La historia ha finalizado");
-//        response.put("title", story.getTitle());
-//
-//        return response;
-//    }
+    public Map<String, Object> deactivateStory(Long storyId) throws ResourceNotFoundException {
+        Story story = storyRepository.findById(storyId)
+                .orElseThrow(() -> new ResourceNotFoundException("Story not found with id: " + storyId));
 
+        story.setActive(false);
+        storyRepository.save(story);
 
+        List<StudentActivity> studentActivities = story.getActivities().getStudentActivities();
+        List<Map<String, Object>> studentDetails = new ArrayList<>();
+
+        for (StudentActivity studentActivity : studentActivities) {
+            Map<String, Object> details = new HashMap<>();
+            details.put("nameStudent", studentActivity.getStudent().getNameStudent());
+            details.put("correctAnswer", studentActivity.getCorrectAnswer());
+            studentDetails.add(details);
+        }
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("title", story.getTitle());
+        response.put("students", studentDetails);
+        response.put("totalStudents", studentActivities.size());
+
+        return response;
+    }
 
     public Story assignActivityToStory(Long storyId, Activity activityDetails) throws ResourceNotFoundException {
         Story story = storyRepository.findById(storyId)

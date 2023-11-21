@@ -27,6 +27,9 @@ public class StudentActivity {
 //    @Column(name = "completion_time", nullable = false)
 //    private Duration completionTime;
 
+    @Column(name = "activity_json", nullable = false, columnDefinition = "TEXT")
+    private String activityJson;
+
     @Column(name = "consulted_word", nullable = false)
 //    @Size(min = 8, max = 25)
     private int consultedWord;

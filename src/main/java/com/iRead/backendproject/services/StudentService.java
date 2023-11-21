@@ -10,6 +10,10 @@ import com.iRead.backendproject.repositories.StudentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 @Service
 @RequiredArgsConstructor
 public class StudentService {
@@ -28,7 +32,7 @@ public class StudentService {
 
         Story story = storyRepository.findStoryByAccessWord(providedAccessWord);
 
-        return story != null && story.getActive() && story.getAccessWord().equals(providedAccessWord);
+        return story != null && story.getAccessWord().equals(providedAccessWord);
     }
 
     public StudentActivity completeActivity(Long studentId, StudentActivity studentActivity, String providedAccessWord) {
@@ -36,8 +40,13 @@ public class StudentService {
                 .orElseThrow(() -> new ResourceNotFoundException("Student not found with id: " + studentId));
 
         if (accessStory(studentId, providedAccessWord)) {
-            studentActivity.setStudent(student);
-            return studentActivityRepository.save(studentActivity);
+            Story story = storyRepository.findStoryByAccessWord(providedAccessWord);
+            if (story != null && story.getActive()) {
+                studentActivity.setStudent(student);
+                return studentActivityRepository.save(studentActivity);
+            } else {
+                throw new IllegalStateException("No se puede completar la actividad. Acceso denegado o historia inactiva.");
+            }
         } else {
             throw new IllegalStateException("No se puede completar la actividad. Acceso denegado a la historia.");
         }
