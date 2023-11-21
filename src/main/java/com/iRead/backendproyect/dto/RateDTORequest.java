@@ -7,10 +7,8 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
-public class TeacherDTO {
-    private String name;
-    private String surname;
-    private String email;
+@NoArgsConstructor
+public class RateDTORequest {
+    private int stars;
 }

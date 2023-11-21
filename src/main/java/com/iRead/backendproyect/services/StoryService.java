@@ -1,14 +1,19 @@
 package com.iRead.backendproyect.services;
 
+import com.iRead.backendproyect.dto.StoryDTO;
 import com.iRead.backendproyect.exception.ResourceNotFoundException;
+import com.iRead.backendproyect.mapper.StoryMapper;
 import com.iRead.backendproyect.models.Teacher;
+import com.iRead.backendproyect.models.api_story.Activity;
 import com.iRead.backendproyect.models.api_story.Story;
-import com.iRead.backendproyect.repositories.StoryRepository;
-import com.iRead.backendproyect.repositories.TeacherRepository;
+import com.iRead.backendproyect.models.api_story.StudentActivity;
+import com.iRead.backendproyect.repositories.*;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -16,9 +21,17 @@ public class StoryService {
 
     private final StoryRepository storyRepository;
     private final TeacherRepository teacherRepository;
+    private final StoryMapper storyMapper;
+    private final ActivityRepository activityRepository;
+    private final StudentService studentService;
 
-    public List<Story> listAllStories() {
-        return storyRepository.findAll();
+    public List<StoryDTO> listAllStories() {
+        List<Story> stories = storyRepository.findAll();
+
+        return stories.stream()
+                .map(storyMapper::mapToDTO)
+                .collect(Collectors.toList());
+
     }
 
     public Story createStoryForTeacher(Long teacherId, Story story) throws ResourceNotFoundException {
@@ -34,17 +47,73 @@ public class StoryService {
         }
     }
 
-    public List<Story> findAllStoriesByTeacherId(Long teacherId) {
-        return storyRepository.findAllStoriesByTeacherId(teacherId);
+    public List<StoryDTO> findAllStoriesByTeacherId(Long teacherId) {
+        List<Story> stories = storyRepository.findAllStoriesByTeacherId(teacherId);
+
+        return stories.stream()
+                .map(storyMapper::mapToDTO)
+                .collect(Collectors.toList());
     }
 
-    public Story findStoryAccessWord(String accessWord) throws ResourceNotFoundException {
-        Story story = storyRepository.findStoryModelByAccessWord(accessWord);
-        if (story == null) {
-            throw new ResourceNotFoundException("No se encontró una historia con la palabra de acceso: " + accessWord);
+    public List<Story> findAllDetailsStoriesByTeacherId(Long teacherId) {
+        List<Story> stories = storyRepository.findAllStoriesByTeacherId(teacherId);
+
+        return stories;
+    }
+
+    public String activateStory(Long storyId) throws ResourceNotFoundException {
+        Story story = storyRepository.findById(storyId)
+            .orElseThrow(() -> new ResourceNotFoundException("Story not found with id: " + storyId));
+
+        story.setActive(true);
+        storyRepository.save(story);
+
+        return story.getTitle();
+    }
+
+    public Map<String, Object> deactivateStory(Long storyId) throws ResourceNotFoundException {
+        Story story = storyRepository.findById(storyId)
+                .orElseThrow(() -> new ResourceNotFoundException("Story not found with id: " + storyId));
+
+        story.setActive(false);
+        storyRepository.save(story);
+
+        List<StudentActivity> studentActivities = story.getActivities().getStudentActivities();
+        List<Map<String, Object>> studentDetails = new ArrayList<>();
+
+        for (StudentActivity studentActivity : studentActivities) {
+            Map<String, Object> details = new HashMap<>();
+            details.put("nameStudent", studentActivity.getStudent().getNameStudent());
+            details.put("correctAnswer", studentActivity.getCorrectAnswer());
+            studentDetails.add(details);
         }
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("title", story.getTitle());
+        response.put("students", studentDetails);
+        response.put("totalStudents", studentActivities.size());
+
+        return response;
+    }
+
+    public Story assignActivityToStory(Long storyId, Activity activityDetails) throws ResourceNotFoundException {
+        Story story = storyRepository.findById(storyId)
+                .orElseThrow(() -> new ResourceNotFoundException("Story not found with id: " + storyId));
+
+        Activity newActivity = new Activity();
+        newActivity.setJsonConverted(activityDetails.getJsonConverted());
+
+        newActivity.setStory(story);
+        activityRepository.save(newActivity);
+
+        story.setActivities(newActivity);
+        storyRepository.save(story);
+
         return story;
     }
 
-
+    @Transactional
+    public void deleteStory(Long storyId) {
+        storyRepository.deleteById(storyId);
+    }
 }

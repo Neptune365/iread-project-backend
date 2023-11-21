@@ -1,6 +1,5 @@
 package com.iRead.backendproyect.config.Jwt;
 
-import com.iRead.backendproyect.models.Teacher;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;

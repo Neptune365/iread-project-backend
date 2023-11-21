@@ -5,12 +5,14 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class TeacherDTO {
-    private String name;
-    private String surname;
-    private String email;
+public class StoryDTO {
+    private String title;
+    private LocalDateTime dateCreation;
+    private String accessWord;
 }

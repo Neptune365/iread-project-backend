@@ -7,8 +7,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -25,11 +23,8 @@ public class Student {
     @Size(min = 5, max = 30)
     private String nameStudent;
 
-    @OneToMany(mappedBy = "student")
+    @OneToOne(mappedBy = "student")
     @JsonIgnore
-    private List<Rate> rates;
-
-    @OneToMany(mappedBy = "student")
-    private List<StudentInteraction> studentActivities;
+    private StudentActivity studentActivities;
 
 }
