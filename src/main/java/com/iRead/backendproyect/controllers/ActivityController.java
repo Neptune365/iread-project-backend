@@ -1,6 +1,5 @@
 package com.iRead.backendproyect.controllers;
 
-import com.iRead.backendproyect.exception.ResourceNotFoundException;
 import com.iRead.backendproyect.models.api_story.Activity;
 import com.iRead.backendproyect.services.ActivityService;
 import lombok.AllArgsConstructor;
@@ -21,10 +20,10 @@ public class ActivityController {
         return activityService.getAllActivities();
     }
 
-    @PostMapping("/{storyId}")
-    public ResponseEntity<Activity> createInteraction(@PathVariable Long storyId, @RequestBody Activity activity) throws ResourceNotFoundException {
-        Activity createdActivity = activityService.addActivityToStory(storyId, activity);
-        return ResponseEntity.ok(createdActivity);
+    @PutMapping("/{activityId}/studentActivities/{studentActivityId}")
+    public ResponseEntity<Activity> assignStudentActivityToActivity(@PathVariable Long activityId, @PathVariable Long studentActivityId) {
+        Activity updatedActivity = activityService.assignStudentActivityToActivity(activityId, studentActivityId);
+        return ResponseEntity.ok(updatedActivity);
     }
 
 }

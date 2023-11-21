@@ -1,7 +1,7 @@
 package com.iRead.backendproyect.controllers;
 
-import com.iRead.backendproyect.models.api_story.Story;
 import com.iRead.backendproyect.models.api_story.Student;
+import com.iRead.backendproyect.models.api_story.StudentActivity;
 import com.iRead.backendproyect.services.StoryService;
 import com.iRead.backendproyect.services.StudentService;
 import lombok.AllArgsConstructor;
@@ -16,14 +16,25 @@ public class StudentController {
     private final StudentService studentService;
     private final StoryService storyService;
 
-    @PostMapping("/")
+    @PostMapping("/register")
     public ResponseEntity<Student> enterName(@RequestBody Student student) {
         return ResponseEntity.ok(studentService.enterName(student));
     }
 
-    @GetMapping("/accessStory/{accessWord}")
-    public void accessToStoryByAccessWord(@PathVariable String accessWord) {
-        storyService.findStoryByAccessWord(accessWord);
+    @PostMapping("/{studentId}/access-story")
+    public ResponseEntity<String> accessStory(@PathVariable Long studentId, @RequestParam String accessWord) {
+        boolean accessStatus = studentService.accessStory(studentId, accessWord);
+        if (accessStatus) {
+            return ResponseEntity.ok("Ingreso a la historia exitoso");
+        } else {
+            return ResponseEntity.ok("No se puede acceder a la historia");
+        }
+    }
+
+    @PostMapping("/{studentId}/activities")
+    public ResponseEntity<StudentActivity> completeActivity(@PathVariable Long studentId, @RequestBody StudentActivity studentActivity, @RequestParam String accessWord) {
+        StudentActivity completedActivity = studentService.completeActivity(studentId, studentActivity, accessWord);
+        return ResponseEntity.ok(completedActivity);
     }
 
 }

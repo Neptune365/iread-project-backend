@@ -6,38 +6,29 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.Duration;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "interaction")
+@Table(name = "activity")
 public class Activity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "interaction_id", nullable = false)
+    @Column(name = "activity_id", nullable = false)
     private Long id;
 
-    @Column(name = "interaction_duration", nullable = false)
-    private Duration interactionDuration;
-
-    @Column(name = "quiz_json", nullable = false)
-    private String quizJson;
-
-    @Column(name = "tale_json", nullable = false)
-    private String taleJson;
-
-    @Column(name = "vocabulary_json", nullable = false)
-    private String vocabularyJson;
+    @Column(name = "json_converted", nullable = false, columnDefinition = "TEXT")
+    private String jsonConverted;
 
     @OneToOne
     @JoinColumn(name = "story_id")
     @JsonIgnore
     private Story story;
 
-//    @OneToMany(mappedBy = "interaction")
-//    private List<StudentInteraction> studentInteractions;
+    @OneToMany(mappedBy = "activity", cascade = CascadeType.REMOVE)
+    private List<StudentActivity> studentActivities;
 
 }

@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.iRead</groupId>
-	<artifactId>backend-proyect</artifactId>
+	<artifactId>backend-project</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>backend-proyect</name>
 	<description>Demo project for Spring Boot</description>

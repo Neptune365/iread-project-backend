@@ -2,9 +2,9 @@ package com.iRead.backendproyect.services;
 
 import com.iRead.backendproyect.exception.ResourceNotFoundException;
 import com.iRead.backendproyect.models.api_story.Activity;
-import com.iRead.backendproyect.models.api_story.Story;
+import com.iRead.backendproyect.models.api_story.StudentActivity;
 import com.iRead.backendproyect.repositories.ActivityRepository;
-import com.iRead.backendproyect.repositories.StoryRepository;
+import com.iRead.backendproyect.repositories.StudentActivityRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,18 +15,23 @@ import java.util.List;
 public class ActivityService {
 
     private final ActivityRepository activityRepository;
-    private final StoryRepository storyRepository;
-
-    public Activity addActivityToStory(Long storyId, Activity activity) {
-        Story story = storyRepository.findById(storyId)
-                .orElseThrow(() -> new ResourceNotFoundException("Story not found with id: " + storyId));
-
-        activity.setStory(story);
-
-        return activityRepository.save(activity);
-    }
+    private final StudentActivityRepository studentActivityRepository;
 
     public List<Activity> getAllActivities(){
         return activityRepository.findAll();
     }
+
+    public Activity assignStudentActivityToActivity(Long activityId, Long studentActivityId) {
+        Activity activity = activityRepository.findById(activityId)
+                .orElseThrow(() -> new ResourceNotFoundException("Activity not found with id: " + activityId));
+
+        StudentActivity studentActivity = studentActivityRepository.findById(studentActivityId)
+                .orElseThrow(() -> new ResourceNotFoundException("StudentActivity not found with id: " + studentActivityId));
+
+        studentActivity.setActivity(activity);
+        studentActivityRepository.save(studentActivity);
+
+        return activity;
+    }
 }
+

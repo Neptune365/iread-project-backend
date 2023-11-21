@@ -27,16 +27,16 @@ public class TeacherController {
         return teacherService.getAllTeachers();
     }
 
-    @PutMapping("/updateTeacher/{teacher_id}")
+    @PutMapping("/updateTeacher/{teacherId}")
     @SecurityRequirement(name = "Bearer Authentication")
-    public AuthDTO updateTeacher(@PathVariable Long teacher_id,@Valid @RequestBody TeacherDTORequest teacherDTORequest) {
-        return teacherService.updateTeacher(teacher_id, teacherDTORequest);
+    public AuthDTO updateTeacher(@PathVariable Long teacherId,@Valid @RequestBody TeacherDTORequest teacherDTORequest) {
+        return teacherService.updateTeacher(teacherId, teacherDTORequest);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{teacherId}")
     @SecurityRequirement(name = "Bearer Authentication")
-    public ResponseEntity<Teacher> getTeacherById(@PathVariable Long id) {
-        Teacher teacher = teacherService.findTeacherById(id);
+    public ResponseEntity<Teacher> getTeacherById(@PathVariable Long teacherId) {
+        Teacher teacher = teacherService.findTeacherById(teacherId);
         return ResponseEntity.ok(teacher);
     }
 

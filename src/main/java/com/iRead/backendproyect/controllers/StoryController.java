@@ -1,7 +1,7 @@
 package com.iRead.backendproyect.controllers;
 
 import com.iRead.backendproyect.dto.StoryDTO;
-import com.iRead.backendproyect.exception.ResourceNotFoundException;
+import com.iRead.backendproyect.models.api_story.Activity;
 import com.iRead.backendproyect.models.api_story.Story;
 import com.iRead.backendproyect.services.StoryService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/stories")
@@ -41,14 +42,38 @@ public class StoryController {
         return ResponseEntity.ok(storyDTOS);
     }
 
+    @GetMapping("/byDetailsTeacher/{teacherId}")
+    @SecurityRequirement(name = "Bearer Authentication")
+    public ResponseEntity<List<Story>> getDetailsStoriesByTeacherId(@PathVariable Long teacherId) {
+        List<Story> stories = storyService.findAllDetailsStoriesByTeacherId(teacherId);
+        return ResponseEntity.ok(stories);
+    }
+
     @PutMapping("/activate/{storyId}")
     @SecurityRequirement(name = "Bearer Authentication")
-    public ResponseEntity<Void> activateStory(@PathVariable Long storyId) {
-        try {
-            storyService.activateStory(storyId);
-            return ResponseEntity.ok().build();
-        } catch (ResourceNotFoundException e) {
-            return ResponseEntity.notFound().build();
-        }
+    public String activateStory(@PathVariable Long storyId) {
+        return storyService.activateStory(storyId);
     }
+
+    @PutMapping("/deactivate/{storyId}")
+    @SecurityRequirement(name = "Bearer Authentication")
+    public ResponseEntity<Map<String, Object>> deactivateStory(@PathVariable Long storyId) {
+        Map<String, Object> response = storyService.deactivateStory(storyId);
+        return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("/{storyId}/activity")
+    @SecurityRequirement(name = "Bearer Authentication")
+    public ResponseEntity<Story> assignActivityToStory(@PathVariable Long storyId, @RequestBody Activity activityDetails) {
+        Story updatedStory = storyService.assignActivityToStory(storyId, activityDetails);
+        return ResponseEntity.ok(updatedStory);
+    }
+
+    @DeleteMapping("/delete/{storyId}")
+    @SecurityRequirement(name = "Bearer Authentication")
+    public ResponseEntity<String> deleteStory(@PathVariable Long storyId) {
+        storyService.deleteStory(storyId);
+        return ResponseEntity.ok("La historia con id: " + storyId + "se ha eliminado");
+    }
+
 }
