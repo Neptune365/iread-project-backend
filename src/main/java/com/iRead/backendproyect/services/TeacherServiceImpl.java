@@ -14,6 +14,9 @@ import com.iRead.backendproyect.models.Teacher;
 import com.iRead.backendproyect.registration.token.ConfirmationToken;
 import com.iRead.backendproyect.registration.token.ConfirmationTokenService;
 import com.iRead.backendproyect.repositories.TeacherRepository;
+import com.iRead.backendproyect.token.Token;
+import com.iRead.backendproyect.token.TokenRepository;
+import com.iRead.backendproyect.token.TokenType;
 import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -34,6 +37,7 @@ public class TeacherServiceImpl implements TeacherService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
     private final ConfirmationTokenService confirmationTokenService;
+    private final TokenRepository tokenRepository;
 
     @Override
     public List<Teacher> getAllTeachers() {
@@ -77,9 +81,33 @@ public class TeacherServiceImpl implements TeacherService {
                 .orElseThrow();
 
         var jwtToken = jwtService.generateToken(user);
-
+        revokeAllUserTokens(user);
+        saveUserToken(user, jwtToken);
         return AuthDTO.builder()
                 .token(jwtToken).build();
+    }
+
+    private void revokeAllUserTokens(Teacher user) {
+        var validUserTokens = tokenRepository.findAllValidTokensBy(user.getId());
+        if (validUserTokens.isEmpty())
+            return;
+        validUserTokens.forEach(t -> {
+            t.setExpired(true);
+            t.setRevoked(true);
+        });
+        tokenRepository.saveAll(validUserTokens);
+
+    }
+
+    private void saveUserToken(Teacher user, String jwtToken) {
+        var token = Token.builder()
+                .teacher(user)
+                .token(jwtToken)
+                .tokenType(TokenType.BEARER)
+                .revoked(false)
+                .expired(false)
+                .build();
+        tokenRepository.save(token);
     }
 
     @Override
