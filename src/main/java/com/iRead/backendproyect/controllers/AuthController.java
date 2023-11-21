@@ -3,6 +3,7 @@ package com.iRead.backendproyect.controllers;
 import com.iRead.backendproyect.dto.*;
 import com.iRead.backendproyect.models.Teacher;
 import com.iRead.backendproyect.registration.RegistrationService;
+import com.iRead.backendproyect.services.ResetPasswordService;
 import com.iRead.backendproyect.services.TeacherServiceImpl;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -21,6 +22,7 @@ public class AuthController {
 
     private final RegistrationService registrationService;
     private final TeacherServiceImpl teacherService;
+    private final ResetPasswordService resetPasswordService;
 
     @PostMapping("/register")
     public ResponseEntity<TeacherDTO> register(@Valid @RequestBody TeacherDTORequest request){
@@ -47,15 +49,19 @@ public class AuthController {
 
         Teacher teacher = optionalTeacher.get();
 
-        String recoveryToken = teacherService.generateRecoveryToken(teacher);
-        teacherService.sendRecoveryTokenByEmail(teacher.getEmail(), recoveryToken);
+        if (!teacher.isEnabled()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("La cuenta no está confirmada");
+        }
+
+        String recoveryToken = resetPasswordService.generateRecoveryToken(teacher);
+        resetPasswordService.sendRecoveryTokenByEmail(teacher.getEmail(), recoveryToken);
 
         return ResponseEntity.ok().build();
     }
 
     @PatchMapping("/reset-password")
     public ResponseEntity<?> resetPassword(@RequestBody ResetPasswordRequest request) {
-        teacherService.resetPassword(request);
+        resetPasswordService.resetPassword(request);
         return ResponseEntity.ok().build();
     }
 
