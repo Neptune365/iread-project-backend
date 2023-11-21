@@ -1,16 +1,18 @@
 package com.iRead.backendproyect.controllers;
 
-import com.iRead.backendproyect.dto.AuthDTO;
-import com.iRead.backendproyect.dto.AuthenticationDTORequest;
-import com.iRead.backendproyect.dto.TeacherDTO;
-import com.iRead.backendproyect.dto.TeacherDTORequest;
+import com.iRead.backendproyect.dto.*;
+import com.iRead.backendproyect.models.Teacher;
 import com.iRead.backendproyect.registration.RegistrationService;
+import com.iRead.backendproyect.services.ResetPasswordService;
 import com.iRead.backendproyect.services.TeacherServiceImpl;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -20,6 +22,7 @@ public class AuthController {
 
     private final RegistrationService registrationService;
     private final TeacherServiceImpl teacherService;
+    private final ResetPasswordService resetPasswordService;
 
     @PostMapping("/register")
     public ResponseEntity<TeacherDTO> register(@Valid @RequestBody TeacherDTORequest request){
@@ -34,6 +37,32 @@ public class AuthController {
     @PostMapping("/authenticate")
     public ResponseEntity<AuthDTO> authenticate(@Valid @RequestBody AuthenticationDTORequest request){
         return ResponseEntity.ok(teacherService.authenticate(request));
+    }
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<?> forgotPassword(@RequestBody ForgotPasswordRequest request) {
+        Optional<Teacher> optionalTeacher = teacherService.findTeacherByEmail(request.getEmail());
+
+        if (optionalTeacher.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuario no encontrado");
+        }
+
+        Teacher teacher = optionalTeacher.get();
+
+        if (!teacher.isEnabled()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("La cuenta no está confirmada");
+        }
+
+        String recoveryToken = resetPasswordService.generateRecoveryToken(teacher);
+        resetPasswordService.sendRecoveryTokenByEmail(teacher.getEmail(), recoveryToken);
+
+        return ResponseEntity.ok().build();
+    }
+
+    @PatchMapping("/reset-password")
+    public ResponseEntity<?> resetPassword(@RequestBody ResetPasswordRequest request) {
+        resetPasswordService.resetPassword(request);
+        return ResponseEntity.ok().build();
     }
 
 }
