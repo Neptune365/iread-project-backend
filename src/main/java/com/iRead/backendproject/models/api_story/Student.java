@@ -25,8 +25,8 @@ public class Student {
     @Size(min = 5, max = 30)
     private String nameStudent;
 
-    @OneToMany(mappedBy = "student")
+    @OneToOne(mappedBy = "student")
     @JsonIgnore
-    private List<StudentActivity> studentActivities;
+    private StudentActivity studentActivities;
 
 }

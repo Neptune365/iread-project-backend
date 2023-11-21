@@ -22,14 +22,14 @@ public class StudentActivity {
     private Long id;
 
     @Column(name = "correct_answer", nullable = false)
-    private boolean correctAnswer;
+    private int correctAnswer;
 
-    @Column(name = "completion_time", nullable = false)
-    private Duration completionTime;
+//    @Column(name = "completion_time", nullable = false)
+//    private Duration completionTime;
 
     @Column(name = "consulted_word", nullable = false)
-    @Size(min = 8, max = 25)
-    private String consultedWord;
+//    @Size(min = 8, max = 25)
+    private int consultedWord;
 
 
     @ManyToOne
@@ -37,8 +37,7 @@ public class StudentActivity {
     @JsonIgnore
     private Activity activity;
 
-
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @OneToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "student_id")
     private Student student;
 

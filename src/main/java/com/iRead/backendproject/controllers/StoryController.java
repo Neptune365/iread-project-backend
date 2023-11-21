@@ -51,10 +51,16 @@ public class StoryController {
 
     @PutMapping("/activate/{storyId}")
     @SecurityRequirement(name = "Bearer Authentication")
-    public ResponseEntity<Map<String, String>> activateStory(@PathVariable Long storyId) {
-        Map<String, String> response = storyService.activateStory(storyId);
-        return ResponseEntity.ok().body(response);
+    public Story activateStory(@PathVariable Long storyId) {
+        return storyService.activateStory(storyId);
     }
+
+//    @PutMapping("/desactive/{storyId}")
+//    @SecurityRequirement(name = "Bearer Authentication")
+//    public ResponseEntity<Map<String, String>> desactivateStory(@PathVariable Long storyId) {
+//        Map<String, String> response = storyService.deactivateStory(storyId);
+//        return ResponseEntity.ok().body(response);
+//    }
 
     @PutMapping("/{storyId}/activity")
     @SecurityRequirement(name = "Bearer Authentication")

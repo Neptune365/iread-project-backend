@@ -33,7 +33,7 @@ public class Story {
     @DateTimeFormat(pattern = "dd-MM-yyyy")
     private LocalDateTime dateCreation;
 
-    @Column(name = "access_word", nullable = false)
+    @Column(name = "access_word", nullable = false, unique = true)
     @Size(min = 5, max = 15)
     private String accessWord;
 
