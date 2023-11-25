@@ -34,7 +34,7 @@ public class RegistrationService {
 
         String token = teacherService.singUpUser(teacher);
 
-        String link = "http://localhost:8081/api/auth/confirm?token=" + token;
+        String link = "http://localhost:8081/api/auth/confirm?token=" + token; //Request o application properties
         emailSender.send(
                 request.getEmail(),
                 buildEmail(request.getName(), link));
