@@ -25,10 +25,7 @@ import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
-import java.util.Base64;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @AllArgsConstructor
@@ -83,7 +80,10 @@ public class TeacherServiceImpl implements TeacherService {
         var user = teacherRepository.findUserByEmail(request.getEmail())
                 .orElseThrow();
 
-        var jwtToken = jwtService.generateToken(user);
+        Long teacherID = user.getId();
+        var extraClaims = new HashMap<String, Object>();
+
+        var jwtToken = jwtService.generateToken(teacherID.toString(), extraClaims, user);
         revokeAllUserTokens(user);
         saveUserToken(user, jwtToken);
         return AuthDTO.builder()
