@@ -20,9 +20,10 @@ public class JwtService {
     private static final String SECRET_KEY = "a107c3a845a05c743f5135d69aba07c9ec83fd41a1353312dc8de453e618793f";
 
     public String generateToken(UserDetails userDetails){
-        return generateToken(new HashMap<>(), userDetails);
+        return generateToken("", new HashMap<>(), userDetails);
     }
-    public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
+    public String generateToken(String teacherId, Map<String, Object> extraClaims, UserDetails userDetails) {
+        extraClaims.put("teacherId", teacherId);
         return Jwts.builder()
                 .setClaims(extraClaims)
                 .setSubject(userDetails.getUsername())
