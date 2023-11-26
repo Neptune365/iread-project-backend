@@ -2,19 +2,20 @@ package com.iRead.backendproyect.controllers;
 
 import com.iRead.backendproyect.models.api_story.Student;
 import com.iRead.backendproyect.models.api_story.StudentActivity;
-import com.iRead.backendproyect.services.StoryService;
 import com.iRead.backendproyect.services.StudentService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/students")
+@CrossOrigin(origins = "http://localhost:4200/")
+@Tag(name = "Student", description = "Student management APIs")
 @AllArgsConstructor
 public class StudentController {
 
     private final StudentService studentService;
-    private final StoryService storyService;
 
     @PostMapping("/register")
     public ResponseEntity<Student> enterName(@RequestBody Student student) {

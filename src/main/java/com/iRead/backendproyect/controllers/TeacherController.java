@@ -15,6 +15,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/teachers")
+@CrossOrigin(origins = "http://localhost:4200/")
 @Tag(name = "Teacher", description = "Teacher management APIs")
 @AllArgsConstructor
 public class TeacherController {

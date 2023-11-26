@@ -6,10 +6,8 @@ import com.iRead.backendproyect.registration.RegistrationService;
 import com.iRead.backendproyect.services.ResetPasswordService;
 import com.iRead.backendproyect.services.TeacherServiceImpl;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +16,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/auth")
+@CrossOrigin(origins = "http://localhost:4200/")
 @Tag(name = "Authentication", description = "Authentication management APIs")
 @AllArgsConstructor
 public class AuthController {
