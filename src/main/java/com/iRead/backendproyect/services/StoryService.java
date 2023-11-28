@@ -88,7 +88,7 @@ public class StoryService {
 
     public Story assignActivityToStory(Long storyId, Activity activityDetails) throws ResourceNotFoundException {
         Story story = storyRepository.findById(storyId)
-                .orElseThrow(() -> new ResourceNotFoundException("Story not found with id: " + storyId));
+                .orElseThrow(() -> new ResourceNotFoundException("Historia no encontrada: " + storyId));
 
         Activity newActivity = new Activity();
         newActivity.setJsonConverted(activityDetails.getJsonConverted());

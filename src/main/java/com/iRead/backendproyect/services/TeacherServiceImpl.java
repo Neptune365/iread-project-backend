@@ -75,7 +75,7 @@ public class TeacherServiceImpl implements TeacherService {
         );
 
         var user = teacherRepository.findUserByEmail(request.getEmail())
-                .orElseThrow();
+                .orElseThrow(() -> new NoSuchElementException("No se encontró un usuario con el correo proporcionado"));
 
         Long teacherID = user.getId();
         var extraClaims = new HashMap<String, Object>();
@@ -87,7 +87,7 @@ public class TeacherServiceImpl implements TeacherService {
                 .token(jwtToken).build();
     }
 
-    private void revokeAllUserTokens(Teacher user) {
+    void revokeAllUserTokens(Teacher user) {
         var validUserTokens = tokenRepository.findAllValidTokensBy(user.getId());
         if (validUserTokens.isEmpty())
             return;
@@ -99,7 +99,7 @@ public class TeacherServiceImpl implements TeacherService {
 
     }
 
-    private void saveUserToken(Teacher user, String jwtToken) {
+    void saveUserToken(Teacher user, String jwtToken) {
         var token = Token.builder()
                 .teacher(user)
                 .token(jwtToken)
