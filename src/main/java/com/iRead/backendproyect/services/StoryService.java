@@ -45,11 +45,6 @@ public class StoryService {
                 .collect(Collectors.toList());
     }
 
-    public List<Story> findAllDetailsStoriesByTeacherId(Long teacherId) {
-        List<Story> stories = storyRepository.findAllStoriesByTeacherId(teacherId);
-
-        return stories;
-    }
 
     public String activateStory(Long storyId) throws ResourceNotFoundException {
         Story story = storyRepository.findById(storyId)

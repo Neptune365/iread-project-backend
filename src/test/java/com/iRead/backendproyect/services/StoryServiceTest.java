@@ -1,6 +1,8 @@
 package com.iRead.backendproyect.services;
 
+import com.iRead.backendproyect.dto.StoryDTO;
 import com.iRead.backendproyect.exception.ResourceNotFoundException;
+import com.iRead.backendproyect.mapper.StoryMapper;
 import com.iRead.backendproyect.models.Activity;
 import com.iRead.backendproyect.models.Story;
 import com.iRead.backendproyect.models.Teacher;
@@ -13,6 +15,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -26,6 +32,8 @@ class StoryServiceTest {
     private TeacherRepository teacherRepository;
     @Mock
     private ActivityRepository activityRepository;
+    @Mock
+    private StoryMapper storyMapper;
 
     @InjectMocks
     private StoryService storyService;
@@ -104,7 +112,6 @@ class StoryServiceTest {
         verify(storyRepository, times(1)).save(existingStory);
     }
 
-
     @Test
     void assignActivityToStory_StoryNotFound_ShouldThrowException() {
         // Arrange
@@ -123,4 +130,107 @@ class StoryServiceTest {
         verify(activityRepository, never()).save(any(Activity.class));
         verify(storyRepository, never()).save(any(Story.class));
     }
+
+
+    @Test
+    void findAllStoriesByTeacherId_Successful() {
+        // Arrange
+        Long teacherId = 1L;
+
+        Story story1 = new Story();
+        story1.setId(1L);
+        story1.setTitle("Story 1");
+        story1.setDateCreation(LocalDateTime.now());
+        story1.setAccessWord("Access1");
+
+        Story story2 = new Story();
+        story2.setId(2L);
+        story2.setTitle("Story 2");
+        story2.setDateCreation(LocalDateTime.now());
+        story2.setAccessWord("Access2");
+
+        List<Story> stories = Arrays.asList(story1, story2);
+
+        when(storyRepository.findAllStoriesByTeacherId(teacherId)).thenReturn(stories);
+
+        StoryDTO storyDto1 = new StoryDTO(1L, "Story 1", LocalDateTime.now(), "Access1", "ImgPreview1");
+        StoryDTO storyDto2 = new StoryDTO(2L, "Story 2", LocalDateTime.now(), "Access2", "ImgPreview2");
+
+        when(storyMapper.mapToDTO(story1)).thenReturn(storyDto1);
+        when(storyMapper.mapToDTO(story2)).thenReturn(storyDto2);
+
+        // Act
+        List<StoryDTO> result = storyService.findAllStoriesByTeacherId(teacherId);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(2, result.size());
+        assertEquals(storyDto1, result.get(0));
+        assertEquals(storyDto2, result.get(1));
+
+        verify(storyRepository, times(1)).findAllStoriesByTeacherId(teacherId);
+        verify(storyMapper, times(2)).mapToDTO(any(Story.class));
+    }
+
+
+    @Test
+    void findAllStoriesByTeacherId_NoStoriesFound() {
+        // Arrange
+        Long teacherId = 1L;
+
+        when(storyRepository.findAllStoriesByTeacherId(teacherId)).thenReturn(Collections.emptyList());
+
+        // Act
+        List<StoryDTO> result = storyService.findAllStoriesByTeacherId(teacherId);
+
+        // Assert
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+
+        verify(storyRepository, times(1)).findAllStoriesByTeacherId(teacherId);
+        verify(storyMapper, never()).mapToDTO(any(Story.class));
+    }
+
+
+    @Test
+    void activateStory_Successful() {
+        // Arrange
+        Long storyId = 1L;
+
+        Story existingStory = new Story();
+        existingStory.setId(storyId);
+        existingStory.setTitle("Test Story");
+        existingStory.setActive(false);
+
+        when(storyRepository.findById(storyId)).thenReturn(Optional.of(existingStory));
+
+        // Act
+        String result = storyService.activateStory(storyId);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(existingStory.getTitle(), result);
+        assertTrue(existingStory.getActive());
+
+        // Verify that the save method was called
+        verify(storyRepository, times(1)).save(existingStory);
+    }
+
+
+    @Test
+    void activateStory_StoryNotFound() {
+        // Arrange
+        Long storyId = 1L;
+
+        when(storyRepository.findById(storyId)).thenReturn(Optional.empty());
+
+        // Act & Assert
+        assertThrows(ResourceNotFoundException.class, () -> storyService.activateStory(storyId));
+
+        // Verify that the save method was not called
+        verify(storyRepository, never()).save(any(Story.class));
+    }
+
+
+
 }

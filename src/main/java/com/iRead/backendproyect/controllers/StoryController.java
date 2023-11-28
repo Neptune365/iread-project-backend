@@ -37,12 +37,6 @@ public class StoryController {
         return ResponseEntity.ok(storyDTOS);
     }
 
-    @GetMapping("/byDetailsTeacher/{teacherId}")
-    @SecurityRequirement(name = "Bearer Authentication")
-    public ResponseEntity<List<Story>> getDetailsStoriesByTeacherId(@PathVariable Long teacherId) {
-        List<Story> stories = storyService.findAllDetailsStoriesByTeacherId(teacherId);
-        return ResponseEntity.ok(stories);
-    }
 
     @PutMapping("/activate/{storyId}")
     @SecurityRequirement(name = "Bearer Authentication")
