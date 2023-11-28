@@ -1,8 +1,6 @@
 package com.iRead.backendproyect.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.iRead.backendproyect.models.api_story.Story;
-import com.iRead.backendproyect.models.api_stripe.Subscription;
 import com.iRead.backendproyect.token.Token;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
@@ -55,9 +53,6 @@ public class Teacher implements UserDetails {
     @OneToMany(mappedBy = "teacher")
     @JsonIgnore
     private List<Story> stories;
-
-    @OneToMany(mappedBy = "teacher")
-    private List<Subscription> subscriptions;
 
     @Column(name = "recovery_token")
     private String recoveryToken;

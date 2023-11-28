@@ -1,4 +1,4 @@
-package com.iRead.backendproyect.models.api_story;
+package com.iRead.backendproyect.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;

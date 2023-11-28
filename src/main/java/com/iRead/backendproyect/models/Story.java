@@ -1,7 +1,6 @@
-package com.iRead.backendproyect.models.api_story;
+package com.iRead.backendproyect.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.iRead.backendproyect.models.Teacher;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -10,7 +9,6 @@ import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -43,10 +41,6 @@ public class Story {
     @JoinColumn(name = "teacher_id")
     @JsonIgnore
     private Teacher teacher;
-
-    @OneToMany(mappedBy = "story")
-    @JsonIgnore
-    private List<Rate> rates;
 
     @OneToOne(mappedBy = "story", cascade = CascadeType.ALL, orphanRemoval = true)
     private Activity activities;

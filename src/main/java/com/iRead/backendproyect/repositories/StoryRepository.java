@@ -1,6 +1,6 @@
 package com.iRead.backendproyect.repositories;
 
-import com.iRead.backendproyect.models.api_story.Story;
+import com.iRead.backendproyect.models.Story;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

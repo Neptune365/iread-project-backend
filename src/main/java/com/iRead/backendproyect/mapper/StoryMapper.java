@@ -1,7 +1,7 @@
 package com.iRead.backendproyect.mapper;
 
 import com.iRead.backendproyect.dto.StoryDTO;
-import com.iRead.backendproyect.models.api_story.Story;
+import com.iRead.backendproyect.models.Story;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
@@ -15,7 +15,13 @@ public class StoryMapper {
     }
 
     public StoryDTO mapToDTO(Story story) {
-        return modelMapper.map(story, StoryDTO.class);
+        return StoryDTO.builder()
+                .id(story.getId())
+                .title(story.getTitle())
+                .dateCreation(story.getDateCreation())
+                .accessWord(story.getAccessWord())
+                .imgPreview(story.getActivities().getImgPreview())
+                .build();
     }
 
     public Story mapToModel(StoryDTO storyDTO) {

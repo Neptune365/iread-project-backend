@@ -1,6 +1,5 @@
-package com.iRead.backendproyect.models.api_story;
+package com.iRead.backendproyect.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -34,7 +33,6 @@ public class StudentActivity {
 
     @ManyToOne
     @JoinColumn(name = "activity_id")
-    @JsonIgnore
     private Activity activity;
 
     @OneToOne(cascade = CascadeType.REMOVE)

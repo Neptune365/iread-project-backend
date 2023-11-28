@@ -1,8 +1,8 @@
 package com.iRead.backendproyect.controllers;
 
 import com.iRead.backendproyect.dto.StoryDTO;
-import com.iRead.backendproyect.models.api_story.Activity;
-import com.iRead.backendproyect.models.api_story.Story;
+import com.iRead.backendproyect.models.Activity;
+import com.iRead.backendproyect.models.Story;
 import com.iRead.backendproyect.services.StoryService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -22,12 +22,6 @@ import java.util.Map;
 public class StoryController {
 
     private final StoryService storyService;
-
-    @GetMapping("/")
-    @SecurityRequirement(name = "Bearer Authentication")
-    public List<StoryDTO> listAllStories() {
-        return storyService.listAllStories();
-    }
 
     @PostMapping("/createStory/{teacherId}")
     @SecurityRequirement(name = "Bearer Authentication")
@@ -68,6 +62,13 @@ public class StoryController {
     public ResponseEntity<Story> assignActivityToStory(@PathVariable Long storyId, @RequestBody Activity activityDetails) {
         Story updatedStory = storyService.assignActivityToStory(storyId, activityDetails);
         return ResponseEntity.ok(updatedStory);
+    }
+
+    @GetMapping("/{storyId}/activity")
+    @SecurityRequirement(name = "Bearer Authentication")
+    public ResponseEntity<Activity> getActivityByStoryId(@PathVariable Long storyId) {
+        Activity activity = storyService.getActivityByStoryId(storyId);
+        return ResponseEntity.ok(activity);
     }
 
     @DeleteMapping("/delete/{storyId}")

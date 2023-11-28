@@ -1,4 +1,4 @@
-package com.iRead.backendproyect.models.api_story;
+package com.iRead.backendproyect.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
@@ -23,12 +23,16 @@ public class Activity {
     @Column(name = "json_converted", nullable = false, columnDefinition = "TEXT")
     private String jsonConverted;
 
+    @Column(name = "img_preview", nullable = false, columnDefinition = "TEXT")
+    private String imgPreview;
+
     @OneToOne
     @JoinColumn(name = "story_id")
     @JsonIgnore
     private Story story;
 
     @OneToMany(mappedBy = "activity", cascade = CascadeType.REMOVE)
+    @JsonIgnore
     private List<StudentActivity> studentActivities;
 
 }

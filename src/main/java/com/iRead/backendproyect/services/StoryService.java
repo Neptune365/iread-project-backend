@@ -4,9 +4,9 @@ import com.iRead.backendproyect.dto.StoryDTO;
 import com.iRead.backendproyect.exception.ResourceNotFoundException;
 import com.iRead.backendproyect.mapper.StoryMapper;
 import com.iRead.backendproyect.models.Teacher;
-import com.iRead.backendproyect.models.api_story.Activity;
-import com.iRead.backendproyect.models.api_story.Story;
-import com.iRead.backendproyect.models.api_story.StudentActivity;
+import com.iRead.backendproyect.models.Activity;
+import com.iRead.backendproyect.models.Story;
+import com.iRead.backendproyect.models.StudentActivity;
 import com.iRead.backendproyect.repositories.*;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -23,16 +23,6 @@ public class StoryService {
     private final TeacherRepository teacherRepository;
     private final StoryMapper storyMapper;
     private final ActivityRepository activityRepository;
-    private final StudentService studentService;
-
-    public List<StoryDTO> listAllStories() {
-        List<Story> stories = storyRepository.findAll();
-
-        return stories.stream()
-                .map(storyMapper::mapToDTO)
-                .collect(Collectors.toList());
-
-    }
 
     public Story createStoryForTeacher(Long teacherId, Story story) throws ResourceNotFoundException {
         Teacher teacher = teacherRepository.findTeacherById(teacherId);
@@ -102,6 +92,7 @@ public class StoryService {
 
         Activity newActivity = new Activity();
         newActivity.setJsonConverted(activityDetails.getJsonConverted());
+        newActivity.setImgPreview(activityDetails.getImgPreview());
 
         newActivity.setStory(story);
         activityRepository.save(newActivity);
@@ -110,6 +101,13 @@ public class StoryService {
         storyRepository.save(story);
 
         return story;
+    }
+
+    public Activity getActivityByStoryId(Long storyId) throws ResourceNotFoundException {
+        Story story = storyRepository.findById(storyId)
+                .orElseThrow(() -> new ResourceNotFoundException("Story not found with id: " + storyId));
+
+        return story.getActivities();
     }
 
     @Transactional

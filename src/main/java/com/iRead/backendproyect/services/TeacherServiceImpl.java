@@ -3,9 +3,7 @@ package com.iRead.backendproyect.services;
 import com.iRead.backendproyect.config.Jwt.JwtService;
 import com.iRead.backendproyect.dto.AuthDTO;
 import com.iRead.backendproyect.dto.AuthenticationDTORequest;
-import com.iRead.backendproyect.dto.ResetPasswordRequest;
 import com.iRead.backendproyect.dto.TeacherDTORequest;
-import com.iRead.backendproyect.email.EmailSender;
 import com.iRead.backendproyect.exception.EmailExistsException;
 import com.iRead.backendproyect.exception.NoSuchElementException;
 import com.iRead.backendproyect.mapper.TeacherMapper;
@@ -23,7 +21,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.*;
 

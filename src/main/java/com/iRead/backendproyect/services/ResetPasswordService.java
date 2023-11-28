@@ -1,16 +1,12 @@
 package com.iRead.backendproyect.services;
 
-import com.iRead.backendproyect.config.Jwt.JwtService;
 import com.iRead.backendproyect.dto.ResetPasswordRequest;
 import com.iRead.backendproyect.email.EmailSender;
 import com.iRead.backendproyect.exception.NoSuchElementException;
 import com.iRead.backendproyect.mapper.TeacherMapper;
 import com.iRead.backendproyect.models.Teacher;
-import com.iRead.backendproyect.registration.token.ConfirmationTokenService;
 import com.iRead.backendproyect.repositories.TeacherRepository;
-import com.iRead.backendproyect.token.TokenRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 

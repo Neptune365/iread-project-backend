@@ -12,7 +12,9 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class StoryDTO {
+    private Long id;
     private String title;
     private LocalDateTime dateCreation;
     private String accessWord;
+    private String imgPreview;
 }
